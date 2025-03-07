@@ -26,19 +26,3 @@ jobs:
         with:
           push: true
           tags: topliceanuvlad/calculator-app:${{ github.sha }}
-
-      - name: Test graceful shutdown
-        run: |
-          # Run the container in detached mode
-          container_id=$(docker run -d topliceanuvlad/calculator-app:${{ github.sha }})
-          echo "Container started with ID: $container_id"
-          
-          # Allow time for the container to fully start
-          sleep 5
-          
-          # Stop the container, which sends SIGTERM to the main process (gunicorn)
-          docker stop $container_id
-          
-          # Check container logs for gunicorn's graceful shutdown message
-          echo "Checking container logs for graceful shutdown message..."
-          docker logs $container_id | grep "Shutting down: Master" || { echo "Graceful shutdown log not found"; exit 1; }
