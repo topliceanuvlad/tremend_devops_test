@@ -36,9 +36,9 @@ jobs:
           # Allow time for the container to fully start
           sleep 5
           
-          # Stop the container which sends a SIGTERM
+          # Stop the container, which sends SIGTERM to the main process (gunicorn)
           docker stop $container_id
           
-          # Check container logs for the shutdown message
+          # Check container logs for gunicorn's graceful shutdown message
           echo "Checking container logs for graceful shutdown message..."
-          docker logs $container_id | grep "SIGTERM received" || { echo "Graceful shutdown log not found"; exit 1; }
+          docker logs $container_id | grep "Shutting down: Master" || { echo "Graceful shutdown log not found"; exit 1; }

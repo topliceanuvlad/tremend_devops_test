@@ -1,10 +1,4 @@
 #!/bin/sh
-# Trap TERM (instead of SIGTERM) and forward it to Gunicorn
-trap 'echo "TERM received, shutting down gunicorn..."; kill -TERM $PID' TERM
-
-# Start Gunicorn in the background and capture its PID
-gunicorn --bind 0.0.0.0:8080 calculator:app &
-PID=$!
-
-# Wait for Gunicorn to exit
-wait $PID
+# Replace the current shell with gunicorn so it becomes PID1.
+# This allows gunicorn's built-in graceful shutdown to work when Docker stops the container.
+exec gunicorn --bind 0.0.0.0:8080 calculator:app
